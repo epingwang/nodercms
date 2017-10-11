@@ -154,6 +154,35 @@ canvas {
   left: 50%;
   transform: translate(-50%, -50%);
 }
+.sponsor .thumbnail {
+  border: none;
+}
+.sponsor .caption {
+  text-align: center;
+  color: #fff;
+}
+.sponsor .caption > h3 {
+  margin-top: 10px;
+}
+.sponsor .weixin,
+.sponsor .alipay {
+  background: #2ca93f;
+}
+.sponsor .weixin img,
+.sponsor .alipay img {
+  width: 60%;
+  margin-top: 30px;
+  border: 10px solid #fff;
+}
+.sponsor .weixin {
+  background: #2ca93f;
+}
+.sponsor .alipay {
+  background: #1aa1e5;
+}
+.badge.sponsor-badge {
+  background-color: #fc7322;
+}
 .install {
   width: 100%;
   min-height: 100%;
@@ -219,7 +248,7 @@ canvas {
 }
 .install > .content .install-panel .text-welcome {
   color: #3787E6;
-  margin: 35px 0 30px;
+  margin: 35px 0 10px;
 }
 .install > .content .panel {
   margin-bottom: 10px;

@@ -856,7 +856,6 @@ angular.module('controllers').controller('categoriesChange', ['$scope', '$state'
           $scope.oldPath = angular.copy(results.category.mixed.prePath);
           var regexPath = /^\/[A-z0-9\_\-\/]+(?=[\/])/.exec(results.category.mixed.prePath);
           $scope.prePath = regexPath ? regexPath[0] : '';
-          debugger;
         } else {
           $scope.oldPath = angular.copy(results.category.path);
           var regexPath = /^\/[A-z0-9\_\-\/]+(?=[\/])/.exec(results.category.path);
@@ -2389,7 +2388,7 @@ angular.module('controllers').controller('featuresChange', ['$scope', '$state','
         $scope.sort = feature.sort;
         $scope.title = feature.title;
         $scope.url = feature.url;
-        $scope.extensions = feature.extensions;
+        $scope.extensions = feature.extensions || {};
 
         if (feature.thumbnail) {
           $scope.thumbnail._id = feature.thumbnail._id;
@@ -2655,6 +2654,7 @@ angular.module('controllers').controller('install', ['$scope', '$state', '$http'
     $scope.hasInstall = false;
     $scope.installingTimeout = null;
     $scope.installingPoll = null;
+    $scope.sponsor = 99;
 
     /**
      * 读取主题
@@ -2767,6 +2767,7 @@ angular.module('controllers').controller('main', ['$scope', '$http',
 		$scope.adminsTotal = '';
 		$scope.readingList = {};
 		$scope.versionIsLatest = true;
+    $scope.sponsor = 99;
 
 		$http.get('/api/dashboard')
 			.then(function (res) {
@@ -3282,30 +3283,15 @@ angular.module('controllers').controller('signIn', ['$scope', '$timeout', '$stat
     $scope.transmitting = false;
     $scope.email = '';
     $scope.password = '';
-    $scope.captcha = '';
-    $scope.captchaData = '';
     $scope.autoSignIn = false;
     $scope.wrongEmailOrPassword = false;
-    $scope.wrongCaptcha = false;
 
     function resetEmailAndPassword () {
       $scope.wrongEmailOrPassword = false;
     }
 
-    function resetCaptcha () {
-      $scope.wrongCaptcha = false;
-    }
-
     $scope.$watch('email', resetEmailAndPassword);
     $scope.$watch('password', resetEmailAndPassword);
-    $scope.$watch('captcha', resetCaptcha);
-
-    $scope.getCaptcha = function () {
-      $http.get('/api/account/captcha')
-        .then(function (res) {
-          $scope.captchaData = res.data;
-        });
-    }; $scope.getCaptcha();
 
     $scope.signIn = function () {
       $scope.transmitting = true;
@@ -3313,23 +3299,11 @@ angular.module('controllers').controller('signIn', ['$scope', '$timeout', '$stat
       $http.put('/api/account/sign-in', {
         email: $scope.email,
         password: $scope.password,
-        captcha: $scope.captcha.toLowerCase(),
         autoSignIn: $scope.autoSignIn
       }).then(function () {
         $state.go('main');
       }, function (res) {
-        $scope.getCaptcha();
-
-        var data = res.data;
-
-        switch (_.get(data, 'error.code')) {
-          case 'WRONG_EMAIL_OR_PASSWORD':
-            $scope.wrongEmailOrPassword = true;
-            break;
-          case 'WRONG_CAPTCHA':
-            $scope.wrongCaptcha = true;
-        }
-
+        $scope.wrongEmailOrPassword = true;
         $scope.animateShake = true;
         $timeout(function () {
           $scope.animateShake = false;
